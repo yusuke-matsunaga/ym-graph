@@ -37,11 +37,14 @@ class UdGraph
 {
 public:
 
+  /// @brief 空のコンストラクタ
+  UdGraph() = default;
+
   /// @brief コンストラクタ
   /// @param[in] node_num ノード数
   /// @param[in] edge_list 枝のリスト
   explicit
-  UdGraph(int node_num = 0,
+  UdGraph(int node_num,
 	  const vector<pair<int, int>>& edge_list = vector<pair<int, int>>());
 
   /// @brief コピーコンストラクタ
@@ -60,6 +63,28 @@ public:
 
   /// @brief デストラクタ
   ~UdGraph() = default;
+
+
+public:
+  //////////////////////////////////////////////////////////////////////
+  // 内容を設定する外部インターフェイス
+  //////////////////////////////////////////////////////////////////////
+
+  /// @brief ノード数を設定する．
+  /// @param[in] node_num ノード数
+  ///
+  /// 以前の内容はクリアされる．
+  void
+  resize(int node_num);
+
+  /// @brief 枝を追加する．
+  /// @param[in] id1, id2 枝の両端のノード番号
+  ///
+  /// - id1 と id2 の範囲チェックは行う．
+  /// - 重複チェックは行わない．
+  void
+  add_edge(int id1,
+	   int id2);
 
 
 public:
@@ -154,7 +179,7 @@ private:
   //////////////////////////////////////////////////////////////////////
 
   // ノード数
-  int mNodeNum;
+  int mNodeNum{0};
 
   // 枝の実体の配列
   vector<pair<int, int>> mEdgeList;
@@ -165,6 +190,38 @@ private:
 //////////////////////////////////////////////////////////////////////
 // インライン関数の定義
 //////////////////////////////////////////////////////////////////////
+
+// @brief ノード数を設定する．
+// @param[in] node_num ノード数
+//
+// 以前の内容はクリアされる．
+inline
+void
+UdGraph::resize(int node_num)
+{
+  mNodeNum = node_num;
+  mEdgeList.clear();
+}
+
+// @brief 枝を追加する．
+// @param[in] id1, id2 枝の両端のノード番号
+//
+// - id1 と id2 の範囲チェックは行う．
+// - 重複チェックは行わない．
+inline
+void
+UdGraph::add_edge(int id1,
+		  int id2)
+{
+  ASSERT_COND( 0 <= id1 && id1 < node_num() );
+  ASSERT_COND( 0 <= id2 && id2 < node_num() );
+
+  // 常に id1 <= id2 になるように順序を正規化する．
+  if ( id1 > id2 ) {
+    swap(id1, id2);
+  }
+  mEdgeList.push_back({id1, id2});
+}
 
 // @brief ノード数を得る．
 inline
@@ -180,15 +237,6 @@ int
 UdGraph::edge_num() const
 {
   return mEdgeList.size();
-}
-
-// @brief 反射の時に true を返す．
-//
-// 反射とはすべてのノードに自己ループがあること
-inline
-bool
-UdGraph::is_reflective() const
-{
 }
 
 // @brief 枝の情報を返す．

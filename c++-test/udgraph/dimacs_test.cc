@@ -19,22 +19,20 @@ TEST(UdGraphDimacsTest, read_dimacs)
   ifstream s(filename);
   ASSERT_COND( static_cast<bool>(s) );
 
-  UdGraph graph;
-  bool stat1 = read_dimacs(s, graph);
-  ASSERT_COND( stat1 );
+  UdGraph graph = UdGraph::read_dimacs(s);
 
   ASSERT_EQ( 138, graph.node_num() );
   ASSERT_EQ( 986, graph.edge_num() );
 
   ostringstream obuf;
-  write_dimacs(obuf, graph);
+  graph.write_dimacs(obuf);
 
   istringstream s1(obuf.str());
-  UdGraph graph2;
-  bool stat2 = read_dimacs(s1, graph2);
+  UdGraph graph2 = UdGraph::read_dimacs(s1);
+  ASSERT_EQ( 130, graph2.node_num() );
 
   ostringstream obuf2;
-  write_dimacs(obuf2, graph2);
+  graph2.write_dimacs(obuf2);
 
   EXPECT_EQ( obuf2.str(), obuf.str() );
 }

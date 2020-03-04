@@ -8,7 +8,7 @@
 /// Copyright (C) 2018 Yusuke Matsunaga
 /// All rights reserved.
 
-#include "ym/udgraph_nsdef.h"
+#include "ym/UdGraph.h"
 #include "ym/Array.h"
 
 

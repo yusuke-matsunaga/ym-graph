@@ -129,8 +129,8 @@ ColGraph::init(const UdGraph& graph,
   // 各ノードに接続する枝数を数える．
   mEdgeNum = 0;
   for ( auto edge: graph.edge_list() ) {
-    int id1 = edge.id1();
-    int id2 = edge.id2();
+    int id1 = edge.first;
+    int id2 = edge.second;
     if ( id1 == id2 ) {
       // そもそもセルフループは彩色不可なので無視する．
       continue;
@@ -154,8 +154,8 @@ ColGraph::init(const UdGraph& graph,
 
   // 隣接リストの設定を行う．
   for ( auto edge: graph.edge_list() ) {
-    int id1 = edge.id1();
-    int id2 = edge.id2();
+    int id1 = edge.first;
+    int id2 = edge.second;
     if ( id1 == id2 ) {
       // そもそもセルフループは彩色不可なので無視する．
       continue;

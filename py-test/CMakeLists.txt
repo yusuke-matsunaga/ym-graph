@@ -5,7 +5,7 @@
 # ===================================================================
 include_directories (
   ${PROJECT_SOURCE_DIR}/ym-base/cython-src
-  ${PROJECT_SOURCE_DIR}/ym-combopt/cython-src
+  ${PROJECT_SOURCE_DIR}/ym-graph/cython-src
   )
 
 
@@ -24,7 +24,7 @@ include_directories (
 # ===================================================================
 
 set ( CYTHON_SOURCES
-  pym_combopt.pyx
+  pym_graph.pyx
   )
 
 set_source_files_properties (
@@ -37,17 +37,17 @@ set_source_files_properties (
 #  module ターゲットの設定
 # ===================================================================
 
-cython_add_module ( pym_combopt
+cython_add_module ( pym_graph
   ${CYTHON_SOURCES}
   $<TARGET_OBJECTS:ym_base_obj_d>
-  $<TARGET_OBJECTS:ym_combopt_obj_d>
+  $<TARGET_OBJECTS:ym_graph_obj_d>
   )
 
-target_compile_options ( pym_combopt
+target_compile_options ( pym_graph
   PRIVATE "-g"
   )
 
 
-target_link_libraries ( pym_combopt
+target_link_libraries ( pym_graph
   ${YM_LIB_DEPENDS}
   )

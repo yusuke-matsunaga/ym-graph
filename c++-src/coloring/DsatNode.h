@@ -9,7 +9,7 @@
 /// All rights reserved.
 
 
-#include "ym/udgraph_nsdef.h"
+#include "ym/UdGraph.h"
 
 
 BEGIN_NAMESPACE_YM_UDGRAPH

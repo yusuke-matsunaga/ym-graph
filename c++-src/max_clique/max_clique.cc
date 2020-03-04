@@ -19,18 +19,20 @@ BEGIN_NAMESPACE_YM_UDGRAPH
 vector<int>
 UdGraph::max_clique(const string& algorithm) const
 {
-  MclqSolver solver(graph);
+  MclqSolver solver(*this);
 
+  vector<int> node_set;
   if ( algorithm == "exact" ) {
-    return solver.exact(node_set);
+    solver.exact(node_set);
   }
   else if ( algorithm == "greedy" ) {
-    return solver.greedy(node_set);
+    solver.greedy(node_set);
   }
   else {
     // デフォルトフォールバック
-    return solver.greedy(node_set);
+    solver.greedy(node_set);
   }
+  return node_set;
 }
 
 END_NAMESPACE_YM_UDGRAPH

@@ -24,8 +24,8 @@ include_directories (
 # サブディレクトリの設定
 # ===================================================================
 
-#add_subdirectory ( c++-test/udgraph )
-#add_subdirectory ( py-test )
+add_subdirectory ( c++-test/udgraph )
+add_subdirectory ( py-test )
 
 
 # ===================================================================

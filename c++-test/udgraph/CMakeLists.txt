@@ -21,10 +21,10 @@ include_directories(
 #  テスト用のターゲットの設定
 # ===================================================================
 
-ym_add_gtest( combopt_dimacs_test
-  dimacs_test.cc
+ym_add_gtest( graph_udgraph_test
+  udgraph_test.cc
   $<TARGET_OBJECTS:ym_base_obj_d>
-  $<TARGET_OBJECTS:ym_combopt_obj_d>
+  $<TARGET_OBJECTS:ym_graph_obj_d>
   DEFINITIONS
   "-DTESTDATA_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/testdata/\""
   )

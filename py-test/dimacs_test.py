@@ -8,7 +8,7 @@
 ### All rights reserved.
 
 import unittest
-from pym_combopt import UdGraph
+from pym_graph import UdGraph
 
 # UdGraph のテスト用クラス
 class UdGraphTest(unittest.TestCase) :

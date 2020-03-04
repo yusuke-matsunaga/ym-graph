@@ -8,35 +8,28 @@
 
 from libcpp cimport bool
 from libcpp.vector cimport vector
+from libcpp.pair cimport pair
 from libcpp.string cimport string
 
 
 cdef extern from "ym/UdGraph.h" namespace "nsYm" :
 
-    # UdEdge クラスの cython バージョン
-    cdef cppclass UdEdge :
-        UdEdge()
-        UdEdge(int id1, int id2)
-        int id1()
-        int id2()
-
     # UdGraph クラスの cython バージョン
     cdef cppclass UdGraph :
         UdGraph()
-        UdGraph(int node_num)
-        void resize(int node_num)
-        void connect(int id1, int id2)
+        UdGraph(int node_num, vector[pair[int, int]]&)
+        void resize(int)
+        void add_edge(int, int)
         int node_num()
         int edge_num()
         bool is_reflective()
-        UdEdge& edge(int)
-        vector[UdEdge]& edge_list()
-        int coloring(vector[int]& color_map)
-        int coloring(const string&, vector[int]& color_map)
+        pair[int, int]& edge(int)
+        vector[pair[int, int]]& edge_list()
 
-    bool read_dimacs(const string&, UdGraph&)
-    void write_dimacs(const string&, UdGraph&)
-    int independent_set(UdGraph&, vector[int]& node_set)
-    int independent_set(UdGraph&, const string&, vector[int]& node_set)
-    int max_clique(UdGraph&, vector[int]& node_set)
-    int max_clique(UdGraph&, const string&, vector[int]& node_set)
+        @staticmethod
+        UdGraph read_dimacs(string&)
+        void write_dimacs(string&)
+
+        pair[int, vector[int]] coloring(string&)
+        vector[int] independent_set(string&)
+        vector[int] max_clique(string&)

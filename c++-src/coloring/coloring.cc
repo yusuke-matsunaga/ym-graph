@@ -23,7 +23,7 @@ dsatur(const UdGraph& graph,
        vector<int>& color_map)
 {
   nsUdGraph::Dsatur dsatsolver(graph, color_map);
-  return dsatsolver.coloring();
+  return dsatsolver.coloring(color_map);
 }
 
 // tabucol で彩色問題を解く．

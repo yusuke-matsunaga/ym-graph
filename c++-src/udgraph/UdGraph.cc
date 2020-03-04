@@ -9,6 +9,7 @@
 
 #include "ym/UdGraph.h"
 #include "ym/Range.h"
+#include "ym/MsgMgr.h"
 
 
 BEGIN_NAMESPACE_YM_UDGRAPH
@@ -21,18 +22,14 @@ BEGIN_NAMESPACE_YM_UDGRAPH
 // @param[in] node_num ノード数
 // @param[in] edge_list 枝のリスト
 UdGraph::UdGraph(int node_num,
-		 const vector<pair<int, int>>& edge_list = vector<pair<int, int>>()) :
-  mNodeNum{node_num},
-  mEdgeList{edge_list}
+		 const vector<pair<int, int>>& edge_list) :
+  mNodeNum{node_num}
 {
-  for ( auto& edge: mEdgeList ) {
+  mEdgeList.reserve(edge_list.size());
+  for ( auto& edge: edge_list ) {
     int id1 = edge.first;
     int id2 = edge.second;
-    // 常に id1 <= id2 になるように順序を正規化する．
-    if ( id1 > id2 ) {
-      edge.first = id2;
-      edge.second = id1;
-    }
+    add_edge(id1, id2);
   }
 }
 
@@ -122,8 +119,10 @@ UdGraph::read_dimacs(istream& s)
   string buff;
   int node_num = 0;
   int edge_num = 0;
-  vector<pair<int, int> > edge_list;
   int max_node_id = 0;
+
+  vector<pair<int, int>> edge_list;
+
   // ファイルをスキャンする．
   // - 'p' 行から node_num, edge_num を得る．
   // - 'e' 行の内容を edge_list に入れる．
@@ -138,7 +137,7 @@ UdGraph::read_dimacs(istream& s)
     split(buff, str_list);
     if ( str_list.empty() ) {
       syntax_error(line);
-      return false;
+      goto error_exit;
     }
 
     if ( str_list[0] == "p" ) {
@@ -150,34 +149,35 @@ UdGraph::read_dimacs(istream& s)
 			MsgType::Error,
 			"DIMACS001",
 			err.str());
-	return false;
+	goto error_exit;
       }
 
       if ( str_list.size() != 4 || str_list[1] != "edge" ) {
 	syntax_error(line);
-	return false;
+	goto error_exit;
       }
       node_num = atoi(str_list[2].c_str());
       edge_num = atoi(str_list[3].c_str());
+      edge_list.reserve(edge_num);
     }
     else if ( str_list[0] == "e" ) {
       if ( str_list.size() != 3 ) {
 	syntax_error(line);
-	return false;
+	goto error_exit;
       }
       int id1 = atoi(str_list[1].c_str()) - 1;
       int id2 = atoi(str_list[2].c_str()) - 1;
-      edge_list.push_back({id1, id2});
       if ( max_node_id < id1 ) {
 	max_node_id = id1;
       }
       if ( max_node_id < id2 ) {
 	max_node_id = id2;
       }
+      edge_list.push_back({id1, id2});
     }
     else {
       syntax_error(line);
-      return false;
+      goto error_exit;
     }
     ++ line;
   }
@@ -199,6 +199,9 @@ UdGraph::read_dimacs(istream& s)
   }
 
   return UdGraph(node_num, edge_list);
+
+ error_exit:
+  return UdGraph();
 }
 
 // @brief 内容を DIMACS 形式で出力する．
