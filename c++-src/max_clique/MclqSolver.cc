@@ -28,8 +28,8 @@ MclqSolver::MclqSolver(const UdGraph& graph) :
   // 隣接するノードの情報を link_array に入れる．
   vector<vector<int> > link_array(mNodeNum);
   for ( const auto& edge: graph.edge_list() ) {
-    int id1 = edge.first;
-    int id2 = edge.second;
+    int id1 = edge.id1;
+    int id2 = edge.id2;
     link_array[id1].push_back(id2);
     link_array[id2].push_back(id1);
   }

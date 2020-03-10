@@ -35,12 +35,12 @@ TEST(UdGraphTest, constructor2)
   ASSERT_EQ( 2, graph.edge_num() );
 
   auto& edge0 = graph.edge(0);
-  ASSERT_EQ( 0, edge0.first );
-  ASSERT_EQ( 1, edge0.second );
+  ASSERT_EQ( 0, edge0.id1 );
+  ASSERT_EQ( 1, edge0.id2 );
 
   auto& edge1 = graph.edge(1);
-  ASSERT_EQ( 2, edge1.first );
-  ASSERT_EQ( 3, edge1.second );
+  ASSERT_EQ( 2, edge1.id1 );
+  ASSERT_EQ( 3, edge1.id2 );
 }
 
 TEST(UdGraphTest, read_dimacs)

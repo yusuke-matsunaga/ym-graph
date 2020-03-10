@@ -7,3 +7,4 @@
 ### All rights reserved.
 
 include "udgraph.pxi"
+include "bigraph.pxi"

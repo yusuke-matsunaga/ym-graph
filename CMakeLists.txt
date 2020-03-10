@@ -25,6 +25,7 @@ include_directories (
 # ===================================================================
 
 add_subdirectory ( c++-test/udgraph )
+add_subdirectory ( c++-test/bigraph )
 add_subdirectory ( py-test )
 
 
@@ -53,10 +54,16 @@ set ( max_clique_SOURCES
   c++-src/max_clique/MclqSolver_exact.cc
   )
 
+set ( bigraph_SOURCES
+  c++-src/bigraph/BiGraph.cc
+  c++-src/bigraph/MatchGraph.cc
+  )
+
 set ( ym_graph_SOURCES
   ${udgraph_SOURCES}
   ${coloring_SOURCES}
   ${max_clique_SOURCES}
+  ${bigraph_SOURCES}
   )
 
 

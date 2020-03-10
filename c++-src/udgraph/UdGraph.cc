@@ -22,14 +22,15 @@ BEGIN_NAMESPACE_YM_UDGRAPH
 // @param[in] node_num ノード数
 // @param[in] edge_list 枝のリスト
 UdGraph::UdGraph(int node_num,
-		 const vector<pair<int, int>>& edge_list) :
-  mNodeNum{node_num}
+		 const vector<Edge>& edge_list) :
+  mNodeNum{node_num},
+  mEdgeList{edge_list}
 {
-  mEdgeList.reserve(edge_list.size());
-  for ( auto& edge: edge_list ) {
-    int id1 = edge.first;
-    int id2 = edge.second;
-    add_edge(id1, id2);
+  // mEdgeList の内容を正規化する．
+  for ( auto& edge: mEdgeList ) {
+    if ( edge.id1 > edge.id2 ) {
+      std::swap(edge.id1, edge.id2);
+    }
   }
 }
 
@@ -41,8 +42,8 @@ UdGraph::is_reflective() const
 {
   vector<bool> mark(node_num(), false);
   for ( const auto& edge: edge_list() ) {
-    int id1 = edge.first;
-    int id2 = edge.second;
+    int id1 = edge.id1;
+    int id2 = edge.id2;
     if ( id1 == id2 ) {
       mark[id1] = true;
     }
@@ -121,7 +122,7 @@ UdGraph::read_dimacs(istream& s)
   int edge_num = 0;
   int max_node_id = 0;
 
-  vector<pair<int, int>> edge_list;
+  vector<Edge> edge_list;
 
   // ファイルをスキャンする．
   // - 'p' 行から node_num, edge_num を得る．
@@ -229,8 +230,8 @@ UdGraph::write_dimacs(ostream& s) const
 {
   s << "p edge " << node_num() << " " << edge_num() << endl;
   for ( const auto& edge: edge_list() ) {
-    int id1 = edge.first + 1;
-    int id2 = edge.second + 1;
+    int id1 = edge.id1 + 1;
+    int id2 = edge.id2 + 1;
     s << "e " << id1 << " " << id2 << endl;
   }
 }

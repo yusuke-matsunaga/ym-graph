@@ -37,6 +37,16 @@ class UdGraph
 {
 public:
 
+  /// @brief 枝を表すクラス
+  struct Edge
+  {
+    /// @brief 両端のノード番号
+    int id1, id2;
+  };
+
+
+public:
+
   /// @brief 空のコンストラクタ
   UdGraph() = default;
 
@@ -45,7 +55,7 @@ public:
   /// @param[in] edge_list 枝のリスト
   explicit
   UdGraph(int node_num,
-	  const vector<pair<int, int>>& edge_list = vector<pair<int, int>>());
+	  const vector<Edge>& edge_list = vector<Edge>());
 
   /// @brief コピーコンストラクタ
   UdGraph(const UdGraph& src) = default;
@@ -109,11 +119,21 @@ public:
   /// @brief 枝の情報を返す．
   /// @param[in] idx 枝番号 ( 0 <= idx < edge_num() )
   /// @return 枝を返す．
-  const pair<int, int>&
+  const Edge&
   edge(int idx) const;
 
+  /// @brief 枝の端点1を返す．
+  /// @param[in] idx 枝番号 ( 0 <= idx < edge_num() )
+  int
+  edge_id1(int idx) const;
+
+  /// @brief 枝の端点2を返す．
+  /// @param[in] idx 枝番号 ( 0 <= idx < edge_num() )
+  int
+  edge_id2(int idx) const;
+
   /// @brief 全ての枝のリストを返す．
-  const vector<pair<int, int>>&
+  const vector<Edge>&
   edge_list() const;
 
 
@@ -182,7 +202,7 @@ private:
   int mNodeNum{0};
 
   // 枝の実体の配列
-  vector<pair<int, int>> mEdgeList;
+  vector<Edge> mEdgeList;
 
 };
 
@@ -243,16 +263,34 @@ UdGraph::edge_num() const
 // @param[in] idx 枝番号 ( 0 <= idx < edge_num() )
 // @return 枝を返す．
 inline
-const pair<int, int>&
+const UdGraph::Edge&
 UdGraph::edge(int idx) const
 {
   ASSERT_COND( 0 <= idx && idx < edge_num() );
   return mEdgeList[idx];
 }
 
+// @brief 枝の端点1を返す．
+// @param[in] idx 枝番号 ( 0 <= idx < edge_num() )
+inline
+int
+UdGraph::edge_id1(int idx) const
+{
+  return edge(idx).id1;
+}
+
+// @brief 枝の端点2を返す．
+// @param[in] idx 枝番号 ( 0 <= idx < edge_num() )
+inline
+int
+UdGraph::edge_id2(int idx) const
+{
+  return edge(idx).id2;
+}
+
 // @brief 全ての枝のリストを返す．
 inline
-const vector<pair<int, int>>&
+const vector<UdGraph::Edge>&
 UdGraph::edge_list() const
 {
   return mEdgeList;

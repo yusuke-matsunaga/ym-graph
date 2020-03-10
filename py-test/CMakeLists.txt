@@ -51,3 +51,13 @@ target_compile_options ( pym_graph
 target_link_libraries ( pym_graph
   ${YM_LIB_DEPENDS}
   )
+
+
+# ===================================================================
+#  テストの設定
+# ===================================================================
+
+add_test ( py_bigraph_test
+  env PYTHONPATH=${PROJECT_BINARY_DIR}/ym-graph/py-test
+  ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/bigraph_test.py
+  )

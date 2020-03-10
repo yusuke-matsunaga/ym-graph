@@ -17,14 +17,13 @@ cdef extern from "ym/UdGraph.h" namespace "nsYm" :
     # UdGraph クラスの cython バージョン
     cdef cppclass UdGraph :
         UdGraph()
-        UdGraph(int node_num, vector[pair[int, int]]&)
         void resize(int)
         void add_edge(int, int)
         int node_num()
         int edge_num()
         bool is_reflective()
-        pair[int, int]& edge(int)
-        vector[pair[int, int]]& edge_list()
+        int edge_id1(int)
+        int edge_id2(int)
 
         @staticmethod
         UdGraph read_dimacs(string&)

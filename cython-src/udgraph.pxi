@@ -36,11 +36,11 @@ cdef class UdGraph :
 
     ### @brief 枝のリストを返す．
     def edge_list(self) :
-        cdef int i
-        cdef pair[int, int] c_edge
+        cdef int id1, id2
         for i in range(self.edge_num) :
-            c_edge = self._this.edge(i)
-            yield c_edge.first, c_edge.second
+            id1 = self._this.edge_id1(i)
+            id2 = self._this.edge_id2(i)
+            yield id1, id2
 
     ### @brief DIMACS 形式のファイルを読み込むクラスメソッド
     @staticmethod
