@@ -51,20 +51,62 @@ TEST(UdGraphTest, read_dimacs)
 
   UdGraph graph = UdGraph::read_dimacs(s);
 
-  ASSERT_EQ( 138, graph.node_num() );
-  ASSERT_EQ( 986, graph.edge_num() );
+  EXPECT_EQ( 138, graph.node_num() );
+  EXPECT_EQ( 986, graph.edge_num() );
 
   ostringstream obuf;
   graph.write_dimacs(obuf);
 
   istringstream s1(obuf.str());
   UdGraph graph2 = UdGraph::read_dimacs(s1);
-  ASSERT_EQ( 138, graph2.node_num() );
+  EXPECT_EQ( 138, graph2.node_num() );
 
   ostringstream obuf2;
   graph2.write_dimacs(obuf2);
 
   EXPECT_EQ( obuf2.str(), obuf.str() );
+}
+
+TEST(UdGraphTest, max_matching1)
+{
+  vector<UdGraph::Edge> edge_list{{0, 2, 1},
+				  {1, 2, 3},
+				  {1, 3, 1}};
+  UdGraph graph(4, edge_list);
+
+  vector<int> match = graph.max_matching();
+
+  EXPECT_EQ( 1, match.size() );
+  EXPECT_EQ( 1, match[0] );
+}
+
+TEST(UdGraphTest, max_matching2)
+{
+  vector<UdGraph::Edge> edge_list{{0, 1, 2},
+				  {0, 4, 2},
+				  {0, 5, 1},
+				  {1, 2, 1},
+				  {1, 6, 2},
+				  {1, 7, 1},
+				  {2, 3, 2},
+				  {2, 5, 1},
+				  {3, 4, 1},
+				  {3, 5, 1},
+				  {3, 6, 2},
+				  {3, 7, 2},
+				  {5, 6, 2},
+				  {6, 7, 1}};
+  UdGraph graph(8, edge_list);
+
+  vector<int> match = graph.max_matching();
+
+  EXPECT_EQ( 4, match.size() );
+
+  int w = 0;
+  for ( int pos: match ) {
+    w += edge_list[pos].weight;
+  }
+  EXPECT_EQ( 7, w );
 }
 
 END_NAMESPACE_YM

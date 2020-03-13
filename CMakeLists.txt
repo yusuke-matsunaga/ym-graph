@@ -56,7 +56,6 @@ set ( max_clique_SOURCES
 
 set ( max_matching_SOURCES
   c++-src/max_matching/MatchGraph.cc
-  c++-src/max_matching/MgQueue.cc
   )
 
 set ( bigraph_SOURCES

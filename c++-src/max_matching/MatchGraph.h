@@ -9,12 +9,11 @@
 /// All rights reserved.
 
 #include "ym/UdGraph.h"
+#include "MgNode.h"
+#include "MgEdge.h"
 
 
 BEGIN_NAMESPACE_YM_UDGRAPH
-
-class MgNode;
-class MgEdge;
 
 //////////////////////////////////////////////////////////////////////
 /// @class MatchGraph MatchGraph.h "MatchGraph.h"
@@ -53,8 +52,9 @@ private:
 
   /// @brief パスを復元する．
   vector<MgEdge*>
-  make_path(MgEdge* edge,
-	    MgNode* node);
+  make_path(MgNode* node,
+	    MgEdge* edge,
+	    int phase);
 
 
 private:

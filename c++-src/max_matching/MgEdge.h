@@ -23,20 +23,27 @@ class MgEdge
 {
 public:
 
-  // 番号
+  /// @brief 番号
   int id;
 
-  // 頂点1
+  /// @brief 頂点1
   MgNode* node1;
 
-  // 頂点2
+  /// @brief 頂点2
   MgNode* node2;
 
-  // 重み
+  /// @brief 重み
   int weight;
 
-  // 選択されている時 true となるフラグ
+  /// @brief 選択されている時 true となるフラグ
   bool selected{false};
+
+  /// @brief 反対側の頂点を返す．
+  MgNode*
+  alt_node(MgNode* node)
+  {
+    return ( node == node1 ) ? node2 : node1;
+  }
 
 };
 

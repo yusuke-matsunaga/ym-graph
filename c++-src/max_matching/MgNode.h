@@ -29,14 +29,11 @@ public:
   // 枝のリスト
   vector<MgEdge*> edge_list;
 
-  // 現在の値
-  int value{0};
+  // 現在の値のリスト
+  vector<int> value_list;
 
-  // ヒープ木上のインデックス
-  int index{-1};
-
-  // 増加路上の枝
-  MgEdge* alt_edge{nullptr};
+  // 増加路上の枝のリスト
+  vector<MgEdge*> alt_edge_list;
 
   // 選択されている枝を返す．
   MgEdge*

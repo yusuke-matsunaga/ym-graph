@@ -10,11 +10,20 @@
 #include "MatchGraph.h"
 #include "MgNode.h"
 #include "MgEdge.h"
-#include "MgQueue.h"
 #include "ym/Range.h"
 
 
 BEGIN_NAMESPACE_YM_UDGRAPH
+
+// @brief 最大重みマッチングを求める．
+// @return マッチングに選ばれた枝番号のリストを返す．
+vector<int>
+UdGraph::max_matching() const
+{
+  MatchGraph graph(*this);
+
+  return graph.max_matching();
+}
 
 //////////////////////////////////////////////////////////////////////
 // MatchGraph の関数
@@ -33,9 +42,9 @@ MatchGraph::MatchGraph(const UdGraph& src) :
   for ( int i: Range(src.edge_num()) ) {
     int id1 = src.edge_id1(i);
     int id2 = src.edge_id2(i);
+    int w = src.edge_weight(i);
     auto node1 = mNodeList[id1];
     auto node2 = mNodeList[id2];
-    int w = src.edge_weight(i);
     auto edge = new MgEdge{i, node1, node2, w};
     mEdgeList[i] = edge;
     node1->edge_list.push_back(edge);
@@ -61,14 +70,6 @@ MatchGraph::~MatchGraph()
 vector<int>
 MatchGraph::max_matching()
 {
-  // 初期マッチを求める．
-  for ( auto edge: mEdgeList ) {
-    if ( edge->node1->selected_edge() == nullptr &&
-	 edge->node2->selected_edge() == nullptr ) {
-      edge->selected = true;
-    }
-  }
-
   // 増加路がなくなるまで繰り返す．
   for ( ; ; ) {
     // 選択されていない頂点から始まる
@@ -100,64 +101,110 @@ MatchGraph::max_matching()
 vector<MgEdge*>
 MatchGraph::find_path()
 {
-  for ( auto node: mNodeList ) {
-    node->alt_edge = nullptr;
-    node->value = -1;
-    node->index = -1;
+  // 両端が選択されていない枝の中で重みが最大のものを選ぶ．
+  for ( auto edge: mEdgeList ) {
+    if ( edge->node1->selected_edge() == nullptr &&
+	 edge->node2->selected_edge() == nullptr ) {
+      return vector<MgEdge*>{edge};
+    }
   }
 
-  MgQueue queue(mNodeList.size());
+  // 以降は片方の端が選択されたノードのみとなる．
+
+  for ( auto node: mNodeList ) {
+    node->value_list.clear();
+    node->alt_edge_list.clear();
+  }
+
+  int n = mNodeList.size();
+
+  // 奇数番目の頂点を入れるキュー
+  vector<MgNode*> queue1;
+  queue1.reserve(n);
+
   for ( auto node: mNodeList ) {
     // 選択された枝を持たないノードをキューに積む．
     if ( node->selected_edge() == nullptr ) {
-      queue.put(node, nullptr, 0);
+      node->value_list.push_back(0);
+      node->alt_edge_list.push_back(nullptr);
+      queue1.push_back(node);
     }
   }
 
+  bool found = false;
   int max_value = 0;
-  vector<MgEdge*> max_path;
-  bool not_found = true;
-  while ( not_found && queue.num() > 0 ) {
-    // value が最大のノードを取り出す．
-    auto node1 = queue.get_top();
-    int value1 = node1->value;
-    for ( auto edge1: node1->edge_list ) {
-      if ( edge1->selected ) {
-	continue;
-      }
-      int value2 = value1 + edge1->weight;
-      auto node2 = edge1->node2;
-      auto edge2 = node2->selected_edge();
-      if ( edge2 == nullptr ) {
-	if ( max_value < value2 ) {
-	  max_value = value2;
-	  max_path = make_path(edge1, node1);
-	  not_found = false;
+  MgNode* max_node = nullptr;
+  MgEdge* max_edge = nullptr;
+  int phase = 0;
+  while ( !found && queue1.size() > 0 ) {
+    vector<MgNode*> queue2;
+    queue2.reserve(n);
+    vector<bool> in_queue(n, false);
+    for ( auto node1: queue1 ) {
+      int value1 = node1->value_list[phase];
+      for ( auto edge1: node1->edge_list ) {
+	if ( edge1->selected ) {
+	  continue;
+	}
+	// 選択されていない枝を選ぶ．
+	int value2 = value1 + edge1->weight;
+	auto node2 = edge1->alt_node(node1);
+	auto edge2 = node2->selected_edge();
+	if ( edge2 == nullptr ) {
+	  // node2 は open node だった．
+	  if ( max_value < value2 ) {
+	    max_value = value2;
+	    max_node = node2;
+	    max_edge = edge1;
+	    found = true;
+	  }
+	}
+	else {
+	  auto node3 = edge2->alt_node(node2);
+	  int value3 = value2 - edge2->weight;
+	  while ( node3->value_list.size() <= (phase + 1) ) {
+	    node3->value_list.push_back(-numeric_limits<int>::max());
+	    node3->alt_edge_list.push_back(nullptr);
+	  }
+	  if ( node3->value_list[phase + 1] < value3 ) {
+	    node3->value_list[phase + 1] = value3;
+	    node3->alt_edge_list[phase] = edge1;
+	    if ( !in_queue[node3->id] ) {
+	      queue2.push_back(node3);
+	      in_queue[node3->id] = true;
+	    }
+	  }
 	}
       }
-      else {
-	auto node3 = edge2->node1;
-	queue.put(node3, edge1, value2 - edge2->weight);
-      }
     }
+    ++ phase;
+    queue1.swap(queue2);
   }
 
-  return max_path;
+  if ( max_node == nullptr ) {
+    return vector<MgEdge*>();
+  }
+  else {
+    auto max_path = make_path(max_node, max_edge, phase - 1);
+    return max_path;
+  }
 }
 
 // @brief パスを復元する．
 vector<MgEdge*>
-MatchGraph::make_path(MgEdge* edge1,
-		      MgNode* node1)
+MatchGraph::make_path(MgNode* node1,
+		      MgEdge* edge1,
+		      int phase)
 {
-  auto edge2 = node1->selected_edge();
+  auto node2 = edge1->alt_node(node1);
+  auto edge2 = node2->selected_edge();
   if ( edge2 == nullptr ) {
     return vector<MgEdge*>{edge1};
   }
   else {
-    auto node2 = edge2->node2;
-    auto edge3 = node1->alt_edge;
-    auto path = make_path(edge3, edge3->node1);
+    auto node3 = edge2->alt_node(node2);
+    auto edge3 = node2->alt_edge_list[phase - 1];
+    auto path = make_path(node3, edge3, phase - 1);
     path.push_back(edge2);
     path.push_back(edge1);
     return path;
