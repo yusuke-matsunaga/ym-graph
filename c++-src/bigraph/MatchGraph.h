@@ -42,6 +42,7 @@ private:
     bool selected{false};
   };
 
+  /// @brief 枝の比較を行うファンクタ
   struct EdgeLt
   {
     bool
@@ -183,7 +184,7 @@ public:
 
   /// @brief 最大重みマッチングを求める．
   vector<int>
-  max_match();
+  max_matching();
 
 
 private:

@@ -21,7 +21,7 @@ BiGraph::max_matching() const
 {
   MatchGraph m{*this};
 
-  return m.max_match();
+  return m.max_matching();
 }
 
 // @brief コンストラクタ
@@ -71,7 +71,7 @@ MatchGraph::~MatchGraph()
 
 // @brief 最大重みマッチングを求める．
 vector<int>
-MatchGraph::max_match()
+MatchGraph::max_matching()
 {
   // 初期マッチを求める．
   for ( auto edge: mEdgeList ) {
