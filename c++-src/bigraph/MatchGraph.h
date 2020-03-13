@@ -65,9 +65,6 @@ private:
     // 現在の値
     int value{0};
 
-    // ヒープ木上のインデックス
-    int index{-1};
-
     // 増加路上の枝
     Edge* alt_edge{nullptr};
 
@@ -82,88 +79,6 @@ private:
       }
       return nullptr;
     }
-  };
-
-  // Node->value をキーとしてヒープ木
-  class Queue
-  {
-  public:
-
-    /// @brief コンストラクタ
-    /// @param[in] max_size 最大サイズ
-    Queue(int max_size);
-
-    /// @brief デストラクタ
-    ~Queue() = default;
-
-
-  public:
-    //////////////////////////////////////////////////////////////////////
-    // 外部インターフェイス
-    //////////////////////////////////////////////////////////////////////
-
-    /// @brief 要素数を返す．
-    int
-    num() const
-    {
-      return mNum;
-    }
-
-    /// @brief ノードを積む．
-    /// @param[in] node 対象のノード
-    /// @param[in] alt_edge 代わりの枝
-    /// @param[in] value 値
-    void
-    put(Node* node,
-	Edge* alt_edge,
-	int value);
-
-    /// @brief 先頭の要素を取り出す．
-    Node*
-    get_top();
-
-    /// @brief 内容をダンプする．
-    /// @param[in] s 出力先のストリーム
-    void
-    dump(ostream& s) const;
-
-
-  private:
-    //////////////////////////////////////////////////////////////////////
-    // 内部で用いられる関数
-    //////////////////////////////////////////////////////////////////////
-
-    /// @brief 要素を適切な位置まで下げる．
-    /// @param[in] pos 対象の位置
-    void
-    move_down(int pos);
-
-    /// @brief 要素を適切な位置まで上げる．
-    /// @param[in] pos 対象の位置
-    void
-    move_up(int pos);
-
-    /// @brief 要素を配置する．
-    void
-    locate(Node* node,
-	   int index);
-
-    /// @brief ヒープ木の条件を満たしているかチェックする．
-    void
-    sanity_check();
-
-
-  private:
-    //////////////////////////////////////////////////////////////////////
-    // データメンバ
-    //////////////////////////////////////////////////////////////////////
-
-    // 要素数
-    int mNum;
-
-    // ヒープ木
-    vector<Node*> mHeap;
-
   };
 
 
