@@ -10,7 +10,7 @@
 
 
 #include "ym/UdGraph.h"
-#include "coloring/ColGraph.h"
+#include "ColGraph.h"
 #include <random>
 
 
