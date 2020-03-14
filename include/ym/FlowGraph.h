@@ -11,68 +11,18 @@
 #include "ym_config.h"
 
 
-BEGIN_NAMESPACE_YM
+/// @brief udgraph 用の名前空間の開始
+#define BEGIN_NAMESPACE_YM_FLOWGRAPH \
+BEGIN_NAMESPACE_YM \
+BEGIN_NAMESPACE(nsFlowGraph)
 
-//////////////////////////////////////////////////////////////////////
-/// @class FgEdge FlowGraph.h "ym/FlowGraph.h"
-/// @brief FlowGraph の枝を表すクラス
-//////////////////////////////////////////////////////////////////////
-class FgEdge
-{
-public:
-
-  /// @brief コンストラクタ
-  /// @param[in] from 始点のノード番号
-  /// @param[in] to 終点のノード番号
-  /// @param[in] cap 容量
-  FgEdge(int from,
-	 int to,
-	 int cap);
-
-  /// @brief デストラクタ
-  ~FgEdge() = default;
+/// @brief udgraph 用の名前空間の終了
+#define END_NAMESPACE_YM_FLOWGRAPH \
+END_NAMESPACE(nsFlowGraph) \
+END_NAMESPACE_YM
 
 
-public:
-  //////////////////////////////////////////////////////////////////////
-  // 外部インターフェイス
-  //////////////////////////////////////////////////////////////////////
-
-  /// @brief 始点のノード番号を返す．
-  int
-  from() const;
-
-  /// @brief 終点のノード番号を返す．
-  int
-  to() const;
-
-  /// @brief 容量を返す．
-  int
-  cap() const;
-
-
-private:
-  //////////////////////////////////////////////////////////////////////
-  // 内部で用いられる関数
-  //////////////////////////////////////////////////////////////////////
-
-
-private:
-  //////////////////////////////////////////////////////////////////////
-  // データメンバ
-  //////////////////////////////////////////////////////////////////////
-
-  // 始点
-  int mFrom;
-
-  // 終点
-  int mTo;
-
-  // 容量
-  int mCap;
-
-};
-
+BEGIN_NAMESPACE_YM_FLOWGRAPH
 
 //////////////////////////////////////////////////////////////////////
 /// @class FlowGraph FlowGraph.h "FlowGraph.h"
@@ -85,11 +35,27 @@ class FlowGraph
 {
 public:
 
+  /// @brief 枝を表すクラス
+  struct Edge
+  {
+    // 始点
+    int from;
+
+    // 終点
+    int to;
+
+    // 容量
+    int cap;
+  };
+
+
+public:
+
   /// @brief コンストラクタ
   /// @param[in] node_num ノード数
   /// @param[in] edge_list 枝のリスト
   FlowGraph(int node_num,
-	    const vector<FgEdge>& edge_list);
+	    const vector<Edge>& edge_list);
 
   /// @brief コピーコンストラクタ
   FlowGraph(const FlowGraph& src) = default;
@@ -118,8 +84,33 @@ public:
   int
   node_num() const;
 
+  /// @brief 枝数を返す．
+  int
+  edge_num() const;
+
+  /// @brief 枝を返す．
+  /// @param[in] pos 枝番号 ( 0 <= pos < edge_num() )
+  /// @return 枝を返す．
+  const Edge&
+  edge(int pos) const;
+
+  /// @brief 枝の始点を返す．
+  /// @param[in] pos 枝番号 ( 0 <= pos < edge_num() )
+  int
+  edge_from(int pos) const;
+
+  /// @brief 枝の終点を返す．
+  /// @param[in] pos 枝番号 ( 0 <= pos < edge_num() )
+  int
+  edge_to(int pos) const;
+
+  /// @brief 枝の容量を返す．
+  /// @param[in] pos 枝番号 ( 0 <= pos < edge_num() )
+  int
+  edge_cap(int pos) const;
+
   /// @brief 枝のリストを返す．
-  const vector<FgEdge>&
+  const vector<Edge>&
   edge_list() const;
 
   /// @brief max-flow 問題を解く．
@@ -156,44 +147,6 @@ private:
 //////////////////////////////////////////////////////////////////////
 
 // @brief コンストラクタ
-// @param[in] from 始点のノード番号
-// @param[in] to 終点のノード番号
-// @param[in] cap 容量
-inline
-FgEdge::FgEdge(int from,
-	       int to,
-	       int cap) :
-  mFrom{from},
-  mTo{to},
-  mCap{cap}
-{
-}
-
-// @brief 始点のノード番号を返す．
-inline
-int
-FgEdge::from() const
-{
-  return mFrom;
-}
-
-// @brief 終点のノード番号を返す．
-inline
-int
-FgEdge::to() const
-{
-  return mTo;
-}
-
-// @brief 容量を返す．
-inline
-int
-FgEdge::cap() const
-{
-  return mCap;
-}
-
-// @brief コンストラクタ
 // @param[in] node_num ノード数
 // @param[in] edge_list 枝のリスト
 inline
@@ -212,13 +165,66 @@ FlowGraph::node_num() const
   return mNodeNum;
 }
 
+// @brief 枝数を返す．
+inline
+int
+FlowGraph::edge_num() const
+{
+  return mEdgeList.size();
+}
+
+// @brief 枝を返す．
+// @param[in] pos 枝番号 ( 0 <= pos < edge_num() )
+// @return 枝を返す．
+inline
+const FlowGraph::Edge&
+FlowGraph::edge(int pos) const
+{
+  ASSERT_COND( 0 <= pos && pos < edge_num() );
+
+  return mEdgeList[pos];
+}
+
+// @brief 枝の始点を返す．
+// @param[in] pos 枝番号 ( 0 <= pos < edge_num() )
+inline
+int
+FlowGraph::edge_from(int pos) const
+{
+  return edge(pos).from;
+}
+
+// @brief 枝の終点を返す．
+// @param[in] pos 枝番号 ( 0 <= pos < edge_num() )
+inline
+int
+FlowGraph::edge_to(int pos) const
+{
+  return edge(pos).to;
+}
+
+// @brief 枝の容量を返す．
+// @param[in] pos 枝番号 ( 0 <= pos < edge_num() )
+inline
+int
+FlowGraph::edge_cap(int pos) const
+{
+  return edge(pos).cap;
+}
+
 // @brief 枝のリストを返す．
 inline
-const vector<FgEdge>&
-FlogGraph::edge_list() const
+const vector<Edge>&
+FlowGraph::edge_list() const
 {
   return mEdgeList;
 }
+
+END_NAMESPACE_YM_FLOWGRAPH
+
+BEGIN_NAMESPACE_YM
+
+using nsFlowGraph::FlowGraph;
 
 END_NAMESPACE_YM
 

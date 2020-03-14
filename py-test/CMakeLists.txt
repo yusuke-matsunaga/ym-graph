@@ -61,3 +61,8 @@ add_test ( py_bigraph_test
   env PYTHONPATH=${PROJECT_BINARY_DIR}/ym-graph/py-test
   ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/bigraph_test.py
   )
+
+add_test ( py_udgraph_max_matching_test
+  env PYTHONPATH=${PROJECT_BINARY_DIR}/ym-graph/py-test
+  ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/max_matching_test.py
+  )

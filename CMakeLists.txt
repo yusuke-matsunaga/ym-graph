@@ -47,6 +47,10 @@ set ( coloring_SOURCES
   c++-src/coloring/TabuCol.cc
   )
 
+set ( indep_set_SOURCES
+  c++-src/indep_set/indep_set.cc
+  )
+
 set ( max_clique_SOURCES
   c++-src/max_clique/max_clique.cc
   c++-src/max_clique/MclqSolver.cc
@@ -55,17 +59,18 @@ set ( max_clique_SOURCES
   )
 
 set ( max_matching_SOURCES
-  c++-src/max_matching/MatchGraph.cc
+  c++-src/max_matching/max_matching.cc
   )
 
 set ( bigraph_SOURCES
   c++-src/bigraph/BiGraph.cc
-  c++-src/bigraph/MatchGraph.cc
+  c++-src/bigraph/max_matching.cc
   )
 
 set ( ym_graph_SOURCES
   ${udgraph_SOURCES}
   ${coloring_SOURCES}
+  ${indep_set_SOURCES}
   ${max_clique_SOURCES}
   ${max_matching_SOURCES}
   ${bigraph_SOURCES}

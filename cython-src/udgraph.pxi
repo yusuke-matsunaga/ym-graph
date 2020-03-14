@@ -21,8 +21,15 @@ cdef class UdGraph :
     def __init__(self, int node_num, edge_list = list()) :
         cdef int id1, id2
         self._this.resize(node_num)
-        for id1, id2 in edge_list :
-            self._this.add_edge(id1, id2)
+        for edge in edge_list :
+            if len(edge) == 2 :
+                id1, id2 = edge
+                w = 1
+            elif len(edge) == 3 :
+                id1, id2, w = edge
+            else :
+                assert False
+            self._this.add_edge(id1, id2, w)
 
     ### @brief ノード数を返す．
     @property
@@ -36,11 +43,12 @@ cdef class UdGraph :
 
     ### @brief 枝のリストを返す．
     def edge_list(self) :
-        cdef int id1, id2
+        cdef int id1, id2, w
         for i in range(self.edge_num) :
             id1 = self._this.edge_id1(i)
             id2 = self._this.edge_id2(i)
-            yield id1, id2
+            w = self._this.edge_weight(i)
+            yield id1, id2, w
 
     ### @brief DIMACS 形式のファイルを読み込むクラスメソッド
     @staticmethod
@@ -72,3 +80,36 @@ cdef class UdGraph :
         nc = cmap_ans.first
         c_color_map = cmap_ans.second
         return nc, [ c_color_map[i] for i in range(self.node_num) ]
+
+    ### @brief 最大独立集合を求める．
+    def independent_set(self, algorithm = None) :
+        cdef string c_algorithm
+        cdef vector[int] c_ans
+        if algorithm != None :
+            c_algorithm = algorithm.encode('UTF-8')
+        else :
+            c_algorithm = string()
+        c_ans = self._this.independent_set(c_algorithm)
+        return [ c_ans[i] for i in range(c_ans.size()) ]
+
+    ### @brief 最大クリークを求める．
+    def max_clique(self, algorithm = None) :
+        cdef string c_algorithm
+        cdef vector[int] c_ans
+        if algorithm != None :
+            c_algorithm = algorithm.encode('UTF-8')
+        else :
+            c_algorithm = string()
+        c_ans = self._this.max_clique(c_algorithm)
+        return [ c_ans[i] for i in range(c_ans.size()) ]
+
+    ### @brief 最大重みマッチングを求める．
+    def max_matching(self, algorithm = None) :
+        cdef string c_algorithm
+        cdef vector[int] c_ans
+        if algorithm != None :
+            c_algorithm = algorithm.encode('UTF-8')
+        else :
+            c_algorithm = string()
+        c_ans = self._this.max_matching(c_algorithm)
+        return [ c_ans[i] for i in range(c_ans.size()) ]

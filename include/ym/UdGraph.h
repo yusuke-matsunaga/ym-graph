@@ -214,9 +214,10 @@ public:
   max_clique(const string& algorithm = string()) const;
 
   /// @brief 最大重みマッチングを求める．
+  /// @param[in] algorithm アルゴリズム名
   /// @return マッチングに選ばれた枝番号のリストを返す．
   vector<int>
-  max_matching() const;
+  max_matching(const string& algorithm = string()) const;
 
 
 private:
