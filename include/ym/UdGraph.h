@@ -44,9 +44,11 @@ public:
   struct Edge
   {
     /// @brief 両端のノード番号
+    ///
+    /// id1 が小さくなるように正規化する．
     int id1, id2;
 
-    /// @brief 重み
+    /// @brief 枝の重み
     int weight{1};
   };
 
@@ -95,7 +97,7 @@ public:
 
   /// @brief 枝を追加する．
   /// @param[in] id1, id2 枝の両端のノード番号
-  /// @param[in] weight 枝の重み
+  /// @param[in] weight 枝の重み(省略時は1)
   ///
   /// - id1 と id2 の範囲チェックは行う．
   /// - 重複チェックは行わない．
@@ -159,7 +161,7 @@ public:
   /// @param[in] s 入力のストリーム
   /// @return 読み込んだグラフを返す．
   ///
-  /// 枝の重みは全て1となる．
+  /// 枝の重みは全て1になる．
   static
   UdGraph
   read_dimacs(istream& s);
@@ -168,7 +170,7 @@ public:
   /// @param[in] filename 入力のファイル名
   /// @return 読み込んだグラフを返す．
   ///
-  /// 枝の重みは全て1となる．
+  /// 枝の重みは全て1になる．
   static
   UdGraph
   read_dimacs(const string& filename);
@@ -186,6 +188,32 @@ public:
   /// 枝の重みは無視される．
   void
   write_dimacs(const string& filename) const;
+
+  /// @brief 独自形式のファイルを読み込む．
+  /// @param[in] s 入力のストリーム
+  ///
+  /// dump() で出力した形式に対応している．
+  static
+  UdGraph
+  restore(istream& s);
+
+  /// @brief 独自形式のファイルを読み込む．
+  /// @param[in] filename 入力ファイル名
+  ///
+  /// dump() で出力した形式に対応している．
+  static
+  UdGraph
+  restore(const string& filename);
+
+  /// @brief 独自形式でファイルに出力する．
+  /// @param[in] s 出力のストリーム
+  void
+  dump(ostream& s) const;
+
+  /// @brief 独自形式でファイルに出力する．
+  /// @param[in] filename 出力ファイル名
+  void
+  dump(const string& filename) const;
 
 
 public:
@@ -269,7 +297,6 @@ UdGraph::add_edge(int id1,
   if ( id1 > id2 ) {
     swap(id1, id2);
   }
-
   mEdgeList.push_back({id1, id2, weight});
 }
 

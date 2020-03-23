@@ -29,6 +29,9 @@ cdef extern from "ym/UdGraph.h" namespace "nsYm" :
         @staticmethod
         UdGraph read_dimacs(string&)
         void write_dimacs(string&)
+        @staticmethod
+        UdGraph restore(string&)
+        void dump(string&)
 
         pair[int, vector[int]] coloring(string&)
         vector[int] independent_set(string&)
