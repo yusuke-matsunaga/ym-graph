@@ -18,16 +18,20 @@ cdef extern from "ym/UdGraph.h" namespace "nsYm" :
     cdef cppclass UdGraph :
         UdGraph()
         void resize(int)
-        void add_edge(int, int)
+        void add_edge(int, int, int)
         int node_num()
         int edge_num()
         bool is_reflective()
         int edge_id1(int)
         int edge_id2(int)
+        int edge_weight(int)
 
         @staticmethod
         UdGraph read_dimacs(string&)
         void write_dimacs(string&)
+        @staticmethod
+        UdGraph restore(string&)
+        void dump(string&)
 
         pair[int, vector[int]] coloring(string&)
         vector[int] independent_set(string&)

@@ -41,7 +41,13 @@ public:
   struct Edge
   {
     /// @brief 両端のノード番号
+    ///
+    /// id1 が小さくなるように正規化する．
     int id1, id2;
+
+    /// @brief 枝の重み
+    int weight{1};
+
   };
 
 
@@ -89,12 +95,14 @@ public:
 
   /// @brief 枝を追加する．
   /// @param[in] id1, id2 枝の両端のノード番号
+  /// @param[in] weight 枝の重み(省略時は1)
   ///
   /// - id1 と id2 の範囲チェックは行う．
   /// - 重複チェックは行わない．
   void
   add_edge(int id1,
-	   int id2);
+	   int id2,
+	   int weight = 1);
 
 
 public:
@@ -132,6 +140,11 @@ public:
   int
   edge_id2(int idx) const;
 
+  /// @brief 枝の重みを返す．
+  /// @param[in] idx 枝番号 ( 0 <= idx < edge_num() )
+  int
+  edge_weight(int idx) const;
+
   /// @brief 全ての枝のリストを返す．
   const vector<Edge>&
   edge_list() const;
@@ -145,6 +158,8 @@ public:
   /// @brief DIMACS 形式のファイルを読み込む．
   /// @param[in] s 入力のストリーム
   /// @return 読み込んだグラフを返す．
+  ///
+  /// 枝の重みは全て1になる．
   static
   UdGraph
   read_dimacs(istream& s);
@@ -152,19 +167,51 @@ public:
   /// @brief DIMACS 形式のファイルを読み込む．
   /// @param[in] filename 入力のファイル名
   /// @return 読み込んだグラフを返す．
+  ///
+  /// 枝の重みは全て1になる．
   static
   UdGraph
   read_dimacs(const string& filename);
 
   /// @brief 内容を DIMACS 形式で出力する．
   /// @param[in] s 出力のストリーム
+  ///
+  /// 枝の重みは無視される．
   void
   write_dimacs(ostream& s) const;
 
   /// @brief 内容を DIMACS 形式で出力する．
   /// @param[in] filename ファイル名
+  ///
+  /// 枝の重みは無視される．
   void
   write_dimacs(const string& filename) const;
+
+  /// @brief 独自形式のファイルを読み込む．
+  /// @param[in] s 入力のストリーム
+  ///
+  /// dump() で出力した形式に対応している．
+  static
+  UdGraph
+  restore(istream& s);
+
+  /// @brief 独自形式のファイルを読み込む．
+  /// @param[in] filename 入力ファイル名
+  ///
+  /// dump() で出力した形式に対応している．
+  static
+  UdGraph
+  restore(const string& filename);
+
+  /// @brief 独自形式でファイルに出力する．
+  /// @param[in] s 出力のストリーム
+  void
+  dump(ostream& s) const;
+
+  /// @brief 独自形式でファイルに出力する．
+  /// @param[in] filename 出力ファイル名
+  void
+  dump(const string& filename) const;
 
 
 public:
@@ -231,7 +278,8 @@ UdGraph::resize(int node_num)
 inline
 void
 UdGraph::add_edge(int id1,
-		  int id2)
+		  int id2,
+		  int weight)
 {
   ASSERT_COND( 0 <= id1 && id1 < node_num() );
   ASSERT_COND( 0 <= id2 && id2 < node_num() );
@@ -240,7 +288,7 @@ UdGraph::add_edge(int id1,
   if ( id1 > id2 ) {
     swap(id1, id2);
   }
-  mEdgeList.push_back({id1, id2});
+  mEdgeList.push_back({id1, id2, weight});
 }
 
 // @brief ノード数を得る．

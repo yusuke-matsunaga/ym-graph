@@ -19,10 +19,17 @@ cdef class UdGraph :
 
     ### @brief 初期化
     def __init__(self, int node_num, edge_list = list()) :
-        cdef int id1, id2
+        cdef int id1, id2, w
         self._this.resize(node_num)
-        for id1, id2 in edge_list :
-            self._this.add_edge(id1, id2)
+        for edge in edge_list :
+            if len(edge) == 2 :
+                id1, id2 = edge
+                w = 1
+            elif len(edge) == 3 :
+                id1, id2, w = edge
+            else :
+                assert False
+            self._this.add_edge(id1, id2, w)
 
     ### @brief ノード数を返す．
     @property
@@ -36,11 +43,12 @@ cdef class UdGraph :
 
     ### @brief 枝のリストを返す．
     def edge_list(self) :
-        cdef int id1, id2
+        cdef int id1, id2, w
         for i in range(self.edge_num) :
             id1 = self._this.edge_id1(i)
             id2 = self._this.edge_id2(i)
-            yield id1, id2
+            w = self._this.edge_weight(i)
+            yield id1, id2, w
 
     ### @brief DIMACS 形式のファイルを読み込むクラスメソッド
     @staticmethod
@@ -57,6 +65,22 @@ cdef class UdGraph :
     def write_dimacs(self, str filename) :
         cdef string c_str = filename.encode('UTF-8')
         self._this.write_dimacs(c_str)
+
+    ### @brief 独自形式のファイルを読み込むクラスメソッド
+    @staticmethod
+    def restore(str filename) :
+        cdef string c_str = filename.encode('UTF-8')
+        cdef UdGraph graph = UdGraph()
+        graph._this = CXX_UdGraph.restore(c_str)
+        if graph._this.node_num() > 0 :
+            return graph
+        else :
+            return None
+
+    ### @brief 独自形式でファイルに書き出す．
+    def dump(self, str filename) :
+        cdef string c_str = filename.encode('UTF-8')
+        self._this.dump(c_str)
 
     ### @brief 彩色問題を解く
     def coloring(self, algorithm = None) :
