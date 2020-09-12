@@ -62,8 +62,8 @@ public:
   /// @param[in] node_num ノード数
   /// @param[in] edge_list 枝のリスト
   explicit
-  UdGraph(int node_num,
-	  const vector<Edge>& edge_list = vector<Edge>());
+  UdGraph(SizeType node_num,
+	  const vector<Edge>& edge_list = vector<Edge>{});
 
   /// @brief コピーコンストラクタ
   UdGraph(const UdGraph& src) = default;
@@ -91,9 +91,9 @@ public:
   /// @brief ノード数を設定する．
   /// @param[in] node_num ノード数
   ///
-  /// 以前の内容はクリアされる．
+  /// - 以前の内容はクリアされる．
   void
-  resize(int node_num);
+  resize(SizeType node_num);
 
   /// @brief 枝を追加する．
   /// @param[in] id1, id2 枝の両端のノード番号
@@ -113,11 +113,11 @@ public:
   //////////////////////////////////////////////////////////////////////
 
   /// @brief ノード数を得る．
-  int
+  SizeType
   node_num() const;
 
   /// @brief 枝の総数を返す．
-  int
+  SizeType
   edge_num() const;
 
   /// @brief 反射の時に true を返す．
@@ -134,11 +134,15 @@ public:
 
   /// @brief 枝の端点1を返す．
   /// @param[in] idx 枝番号 ( 0 <= idx < edge_num() )
+  ///
+  /// 常に端点1の番号は端点2の番号より小さい
   int
   edge_id1(int idx) const;
 
   /// @brief 枝の端点2を返す．
   /// @param[in] idx 枝番号 ( 0 <= idx < edge_num() )
+  ///
+  /// 常に端点1の番号は端点2の番号より小さい
   int
   edge_id2(int idx) const;
 
@@ -254,7 +258,7 @@ private:
   //////////////////////////////////////////////////////////////////////
 
   // ノード数
-  int mNodeNum{0};
+  SizeType mNodeNum{0};
 
   // 枝の実体の配列
   vector<Edge> mEdgeList;
@@ -272,7 +276,7 @@ private:
 // 以前の内容はクリアされる．
 inline
 void
-UdGraph::resize(int node_num)
+UdGraph::resize(SizeType node_num)
 {
   mNodeNum = node_num;
   mEdgeList.clear();
@@ -302,7 +306,7 @@ UdGraph::add_edge(int id1,
 
 // @brief ノード数を得る．
 inline
-int
+SizeType
 UdGraph::node_num() const
 {
   return mNodeNum;
@@ -310,7 +314,7 @@ UdGraph::node_num() const
 
 // @brief 枝の総数を返す．
 inline
-int
+SizeType
 UdGraph::edge_num() const
 {
   return mEdgeList.size();

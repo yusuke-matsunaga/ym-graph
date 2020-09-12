@@ -21,7 +21,7 @@ BEGIN_NAMESPACE_YM_UDGRAPH
 // @brief コンストラクタ
 // @param[in] node_num ノード数
 // @param[in] edge_list 枝のリスト
-UdGraph::UdGraph(int node_num,
+UdGraph::UdGraph(SizeType node_num,
 		 const vector<Edge>& edge_list) :
   mNodeNum{node_num},
   mEdgeList{edge_list}
