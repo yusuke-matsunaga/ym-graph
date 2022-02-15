@@ -10,8 +10,8 @@ include_directories (
   ${PROJECT_BINARY_DIR}/include
   ${PROJECT_SOURCE_DIR}/ym-common/include
   ${PROJECT_SOURCE_DIR}/ym-base/include
-  ${CMAKE_CURRENT_SOURCE_DIR}/include
-  ${CMAKE_CURRENT_SOURCE_DIR}/private_include
+  include
+  private_include
   )
 
 
@@ -24,9 +24,9 @@ include_directories (
 # サブディレクトリの設定
 # ===================================================================
 
-add_subdirectory ( c++-test/udgraph )
-add_subdirectory ( c++-test/bigraph )
-add_subdirectory ( py-test )
+add_subdirectory ( tests/c++/udgraph )
+add_subdirectory ( tests/c++/bigraph )
+add_subdirectory ( tests/python )
 
 
 # ===================================================================
@@ -34,37 +34,37 @@ add_subdirectory ( py-test )
 # ===================================================================
 
 set ( udgraph_SOURCES
-  c++-src/udgraph/UdGraph.cc
+  c++-srcs/udgraph/UdGraph.cc
   )
 
 set ( coloring_SOURCES
-  c++-src/coloring/coloring.cc
-  c++-src/coloring/ColGraph.cc
-  c++-src/coloring/Dsatur.cc
-  c++-src/coloring/IsCov.cc
-  c++-src/coloring/Isx.cc
-  c++-src/coloring/Isx2.cc
-  c++-src/coloring/TabuCol.cc
+  c++-srcs/coloring/coloring.cc
+  c++-srcs/coloring/ColGraph.cc
+  c++-srcs/coloring/Dsatur.cc
+  c++-srcs/coloring/IsCov.cc
+  c++-srcs/coloring/Isx.cc
+  c++-srcs/coloring/Isx2.cc
+  c++-srcs/coloring/TabuCol.cc
   )
 
 set ( indep_set_SOURCES
-  c++-src/indep_set/indep_set.cc
+  c++-srcs/indep_set/indep_set.cc
   )
 
 set ( max_clique_SOURCES
-  c++-src/max_clique/max_clique.cc
-  c++-src/max_clique/MclqSolver.cc
-  c++-src/max_clique/MclqSolver_greedy.cc
-  c++-src/max_clique/MclqSolver_exact.cc
+  c++-srcs/max_clique/max_clique.cc
+  c++-srcs/max_clique/MclqSolver.cc
+  c++-srcs/max_clique/MclqSolver_greedy.cc
+  c++-srcs/max_clique/MclqSolver_exact.cc
   )
 
 set ( max_matching_SOURCES
-  c++-src/max_matching/max_matching.cc
+  c++-srcs/max_matching/max_matching.cc
   )
 
 set ( bigraph_SOURCES
-  c++-src/bigraph/BiGraph.cc
-  c++-src/bigraph/max_matching.cc
+  c++-srcs/bigraph/BiGraph.cc
+  c++-srcs/bigraph/max_matching.cc
   )
 
 set ( ym_graph_SOURCES
