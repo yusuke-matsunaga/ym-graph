@@ -2,9 +2,6 @@
 # ===================================================================
 # インクルードパスの設定
 # ===================================================================
-include_directories(
-  ${GTEST_INCLUDE_DIR}
-  )
 
 
 # ===================================================================
@@ -16,15 +13,24 @@ include_directories(
 #  ソースファイルの設定
 # ===================================================================
 
+set ( DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../testdata/" )
 
 # ===================================================================
 #  テスト用のターゲットの設定
 # ===================================================================
 
-ym_add_gtest( graph_udgraph_test
-  udgraph_test.cc
+ym_add_gtest( graph_bigraph_test
+  bigraph/bigraph_test.cc
   $<TARGET_OBJECTS:ym_base_obj_d>
   $<TARGET_OBJECTS:ym_graph_obj_d>
   DEFINITIONS
-  "-DTESTDATA_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/testdata/\""
+  "-DTESTDATA_DIR=\"${DATA_DIR}\""
+  )
+
+ym_add_gtest( graph_udgraph_test
+  udgraph/udgraph_test.cc
+  $<TARGET_OBJECTS:ym_base_obj_d>
+  $<TARGET_OBJECTS:ym_graph_obj_d>
+  DEFINITIONS
+  "-DTESTDATA_DIR=\"${DATA_DIR}\""
   )
